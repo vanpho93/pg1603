@@ -10,10 +10,15 @@ const config = {
 
 const pool = new pg.Pool(config);
 
-pool.connect((err, client, done) => {
-    if (err) return console.log('LOI: ', err);
-    client.query('SELECT * FROM "TinTuc"', (errQuery, result) => {
-        if (errQuery) return console.log(errQuery);
-        console.log(result);
+
+function query(sql, cb) {
+    pool.connect((err, client, done) => {
+        if (err) return console.log('LOI: ', err);
+        client.query(sql, (errQuery, result) => {
+            if (errQuery) return console.log(errQuery);
+            cb(result);
+        });
     });
-});
+}
+
+query('SELECT * FROM "TinTuc"', result => console.log(result.rows));
